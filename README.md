@@ -1,0 +1,1 @@
+localhost:8761 for eureka server to see services
