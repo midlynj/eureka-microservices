@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping(value = "/api/coupon", headers = "Accept=application/json")
 public class CouponController {
-Logger LOGGER = LoggerFactory.getLogger(CouponController.class);
     @Autowired
     CouponServiceImpl couponService;
 
