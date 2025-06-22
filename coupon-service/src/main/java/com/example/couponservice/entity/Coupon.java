@@ -5,10 +5,11 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Entity
-public class Coupon {
+public class Coupon implements Serializable {
     public Coupon() {
     }
 
