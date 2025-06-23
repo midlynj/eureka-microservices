@@ -34,7 +34,7 @@ public class ProductServiceImpl implements ProductInterface {
     @Retry(name = "product-api", fallbackMethod = "handleError")
     public Product create(Product product) {
         Coupon coupon = couponClient.getCoupon(product.getCouponCode());
-        product.setPrice(product.getPrice().subtract(coupon.getDiscount()));
+        product.setDiscountPrice(product.getPrice().subtract(coupon.getDiscount()));
 
         LOGGER.info("New product created");
 

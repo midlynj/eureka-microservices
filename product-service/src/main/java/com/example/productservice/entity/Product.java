@@ -14,6 +14,24 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    private BigDecimal discountPrice;
+
+    public BigDecimal getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public Product(Long id, String name, BigDecimal discountPrice, String description, BigDecimal price, String couponCode) {
+        this.id = id;
+        this.name = name;
+        this.discountPrice = discountPrice;
+        this.description = description;
+        this.price = price;
+        this.couponCode = couponCode;
+    }
+
+    public void setDiscountPrice(BigDecimal discountPrice) {
+        this.discountPrice = discountPrice;
+    }
 
     public Long getId() {
         return id;
@@ -43,6 +61,18 @@ public class Product {
         return price;
     }
 
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", discountPrice=" + discountPrice +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", couponCode='" + couponCode + '\'' +
+                '}';
+    }
+
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
@@ -55,24 +85,13 @@ public class Product {
         this.couponCode = couponCode;
     }
 
-    @Override
-    public String toString() {
-        return "Product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", price=" + price +
-                ", couponCode='" + couponCode + '\'' +
-                '}';
-    }
-
-    public Product(Long id, String name, String description, BigDecimal price, String couponCode) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.price = price;
-        this.couponCode = couponCode;
-    }
+    //    public Product(Long id, String name, String description, BigDecimal price, String couponCode) {
+//        this.id = id;
+//        this.name = name;
+//        this.description = description;
+//        this.price = price;
+//        this.couponCode = couponCode;
+//    }
 
     private String description;
     private BigDecimal price;
