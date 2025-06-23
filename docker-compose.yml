@@ -1,0 +1,103 @@
+version: "3.8"
+networks:
+  ms-network:
+    name: ms-network
+    driver: bridge
+services:
+  eureka-server:
+    networks:
+      - ms-network
+    environment:
+      eureka.instance.hostname: eureka-server
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+    build: ./eureka-server
+    ports:
+      - "8761:8761"
+#
+  gateway:
+    networks:
+      - ms-network
+    environment:
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+      eureka.client.fetch.registry: true
+      eureka.client.registryWithEureka: true
+    build: ./apigateway-service
+    depends_on:
+      - eureka-server
+    ports:
+      - "9095:9095"
+
+  redis:
+    container_name: redis
+    restart: always
+    networks:
+      - ms-network
+    image: docker.io/library/redis
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+    ports:
+      - "6379:6379"
+#
+  coupon-db:
+    container_name: coupon-db
+    image: container-registry.oracle.com/database/free
+    volumes:
+      - mydata:/var/lib/oracle
+
+    restart: on-failure
+    networks:
+      - ms-network
+    environment:
+      - ORACLE_SID=FREE
+      - ORACLE_PDB=FREEPDB1
+      - ORACLE_EDITION=developer
+
+    ports:
+      - "1521:1521"
+
+
+  coupon-service:
+    networks:
+      - ms-network
+    restart: on-failure
+    environment:
+      spring.datasource.url: jdbc:oracle:thin:@//coupon-db:1521/FREEPDB1
+      spring.datasource.driver-class-name: oracle.jdbc.driver.OracleDriver
+      spring.datasource.username: stacks
+      spring.datasource.password: 123
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+
+    build: ./coupon-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - coupon-db
+      - redis
+
+
+  product-service:
+    networks:
+      - ms-network
+    environment:
+      spring.datasource.url: jdbc:oracle:thin:@//coupon-db:1521/FREEPDB1
+      spring.datasource.driver-class-name: oracle.jdbc.driver.OracleDriver
+      spring.datasource.username: stacks
+      spring.datasource.password: 123
+      eureka.client.serviceUrl.defaultZone: http://eureka-server:8761/eureka/
+
+    build: ./product-service
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+    depends_on:
+      - coupon-db
+volumes:
+  mydata:
+
+
+
+
+
+
+
